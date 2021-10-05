@@ -8,6 +8,7 @@ type StateType = {
   news: [];
   loading: boolean;
   images: [];
+  comments: [];
 };
 
 export const news_Store = createModel<RootModel>()({
@@ -15,6 +16,7 @@ export const news_Store = createModel<RootModel>()({
     news: [],
     loading: false,
     images: [],
+    comments: [],
   } as StateType, // initial state
 
   reducers: {
@@ -38,6 +40,12 @@ export const news_Store = createModel<RootModel>()({
         images: payload,
       };
     },
+    SET_COMMENTS: (state, payload: []) => {
+      return {
+        ...state,
+        comments: payload,
+      };
+    },
   },
   effects: () => ({
     fetchNews() {
@@ -48,6 +56,7 @@ export const news_Store = createModel<RootModel>()({
         timeout: 1000,
       })
         .then(res => {
+          console.log(res, 'news');
           this.SET_NEWS(res.data);
         })
         .catch(err => {
@@ -65,7 +74,27 @@ export const news_Store = createModel<RootModel>()({
         timeout: 1000,
       })
         .then(res => {
+          console.log(res, 'images');
           this.SET_IMAGES(res.data);
+        })
+        .catch(err => {
+          err;
+        })
+        .finally(() => {
+          this.SET_LOADING(false);
+        });
+    },
+    getComments(id: number) {
+      this.SET_LOADING(true);
+      axios({
+        method: 'get',
+        url: `${baseUrl}/${id}/comments`,
+        timeout: 1000,
+      })
+        .then(res => {
+          console.log(res.data, 'comments');
+
+          this.SET_COMMENTS(res.data);
         })
         .catch(err => {
           err;
