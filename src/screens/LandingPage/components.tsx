@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
 import {hp, wp} from '../../common/utils';
 import * as Images from '../../../assets';
+import useNavigation from '../../hooks/useNavigation';
 // import {format} from 'date-fns';
 
 export type NewsCardType = {
@@ -10,19 +11,21 @@ export type NewsCardType = {
     title: string;
     author: string;
     createdAt: string;
+    id: number;
   };
 };
 
 export const NewsCard = (props: NewsCardType) => {
-  const {onPress, item} = props;
-  const {title, author, createdAt} = item;
+  const {navigate} = useNavigation();
+  const {item} = props;
+  const {title, author, createdAt, id} = item;
   // const dateFormatter = format(new Date(createdAt));
 
   return (
     <TouchableOpacity
       style={styles.container}
       activeOpacity={0.8}
-      onPress={onPress}>
+      onPress={() => navigate('NewsImage', {id, title})}>
       <Image source={Images.AuthorPix} style={styles.authorPix} />
       <View style={styles.titleContainer}>
         <Text style={styles.title}>{title}</Text>
